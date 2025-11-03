@@ -89,6 +89,15 @@ class MyApp : Application() {
         this.messageCallback = callback
     }
 
+    fun clearMessageCallback() {
+        Log.d("MyApp", "🔄 Limpiando callback de mensajes")
+        this.messageCallback = null
+    }
+
+    fun hasActiveCallback(): Boolean {
+        return this.messageCallback != null
+    }
+
     fun disconnectWebSocket() {
         webSocketClient?.close()
         isConnected = false

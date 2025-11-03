@@ -47,4 +47,5 @@ class ResultsActivity : AppCompatActivity() {
             finishAffinity()
         }
     }
+
 }

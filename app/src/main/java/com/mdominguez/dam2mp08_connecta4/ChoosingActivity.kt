@@ -81,9 +81,10 @@ class ChoosingActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        myApp.setMessageCallback { message -> processMessage(message) }
         Log.d("CHOOSING", "🎯 onResume - Reiniciando estado")
         resetChoosingState()
-        requestClientsList()
+
     }
 
     override fun onPause() {
@@ -128,19 +129,15 @@ class ChoosingActivity : AppCompatActivity() {
                 "userJoined" -> {
                     val userName = jsonObject.optString("userName", "")
                     Log.d("CHOOSING", "👤 Usuario conectado: $userName")
-                    requestClientsList()
                 }
                 "userLeft" -> {
                     val userName = jsonObject.optString("userName", "")
                     Log.d("CHOOSING", "🚪 Usuario desconectado: $userName")
-                    requestClientsList()
                 }
                 "invite to play" -> {
                     handleInvitationReceived(jsonObject)
                 }
-                "invite response" -> {
-                    handleInvitationResponse(jsonObject)
-                }
+                // ⚠️ ELIMINADO completamente el manejo de invite response (la recibiremos en la vista de Pairing)
                 // ⚠️ ELIMINADO completamente el manejo de nameClient
                 "entersPlayer1", "entersPlayer2" -> {
                     Log.d("CHOOSING", "🚪 Mensaje de emparejamiento: $type - IGNORADO")
@@ -177,46 +174,6 @@ class ChoosingActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleInvitationResponse(jsonObject: JSONObject) {
-        val origin = jsonObject.optString("origin", "")
-        val accepted = jsonObject.optBoolean("accepted", false)
-
-        Log.d("CHOOSING", "📨 RESPUESTA de invitación: $origin - Aceptada: $accepted")
-
-        runOnUiThread {
-            if (accepted) {
-                txtStatus.text = "$origin aceptó tu invitación!"
-                // Como INVITADOR, vamos directamente a Pairing después de recibir aceptación
-                if (!isFinishing && !isDestroyed) {
-                    Log.d("CHOOSING", "🎯 Como INVITADOR, yendo a Pairing después de aceptación")
-                    goToPairing(origin, isInviter = true)
-                }
-            } else {
-                txtStatus.text = "$origin rechazó tu invitación"
-                showTemporaryAlert("$origin ha rechazado tu invitación")
-                resetChoosingState()
-            }
-        }
-    }
-
-    private fun requestClientsList() {
-        val request = JSONObject().apply {
-            put("type", "getClients")
-        }
-        myApp.sendWebSocketMessage(request.toString())
-        Log.d("CHOOSING", "📋 Solicitando lista actualizada de clientes")
-    }
-
-    private fun showTemporaryAlert(message: String) {
-        runOnUiThread {
-            if (!isFinishing && !isDestroyed) {
-                AlertDialog.Builder(this)
-                    .setMessage(message)
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-        }
-    }
 
     private fun processClientsListData(listArray: JSONArray) {
         runOnUiThread {

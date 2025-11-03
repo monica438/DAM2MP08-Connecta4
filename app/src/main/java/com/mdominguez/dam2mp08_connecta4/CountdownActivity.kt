@@ -45,6 +45,15 @@ class CountdownActivity : AppCompatActivity() {
         countdownValue.text = "5"
     }
 
+    override fun onResume() {
+        super.onResume()
+        myApp.setMessageCallback { message -> processMessage(message) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
     private fun processMessage(message: String) {
         Log.d("COUNTDOWN", "Procesando mensaje: $message")
         try {

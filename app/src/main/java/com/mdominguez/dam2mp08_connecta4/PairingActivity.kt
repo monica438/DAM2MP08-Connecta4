@@ -45,6 +45,15 @@ class PairingActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        myApp.setMessageCallback { message -> processMessage(message) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
     private fun setupUI(intendedOpponent: String) {
         if (isInviter) {
             // SOMOS EL INVITADOR: mostramos nuestro nombre y "?" para el oponente

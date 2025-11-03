@@ -63,6 +63,15 @@ class MainActivity : AppCompatActivity() {
         construirTaulell()
     }
 
+    override fun onResume() {
+        super.onResume()
+        myApp.setMessageCallback { message -> processMessage(message) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
     private fun processMessage(message: String) {
         Log.d("MAIN_ACTIVITY", "Procesando mensaje: $message")
         try {
