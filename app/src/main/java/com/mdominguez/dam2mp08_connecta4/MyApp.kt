@@ -24,9 +24,9 @@ class MyApp : Application() {
     }
 
     fun connectWebSocket(serverUrl: String, playerName: String, onMessage: (String) -> Unit) {
-        // Si ya estamos conectados con el mismo nombre, no hacer nada
+        // Para controlar la reconexión: si ya estamos conectados con el mismo nombre, no hacer nada
         if (isConnected && currentPlayerName == playerName) {
-            Log.d("MyApp", "✅ Ya conectado como $playerName - Reutilizando conexión")
+            Log.d("MyApp", "Ya conectado como $playerName - Reutilizando conexión")
             messageCallback = onMessage
             return
         }
@@ -41,7 +41,7 @@ class MyApp : Application() {
             val uri = URI(serverUrl)
             webSocketClient = object : WebSocketClient(uri) {
                 override fun onOpen(handshakedata: ServerHandshake?) {
-                    Log.d("MyApp", "✅ WebSocket conectado")
+                    Log.d("MyApp", "WebSocket conectado")
                     isConnected = true
 
                     // Enviar información del usuario
@@ -53,19 +53,19 @@ class MyApp : Application() {
                 }
 
                 override fun onMessage(message: String?) {
-                    Log.d("MyApp", "📥 Mensaje: $message")
+                    Log.d("MyApp", "Mensaje: $message")
                     message?.let {
                         messageCallback?.invoke(it)
                     }
                 }
 
                 override fun onClose(code: Int, reason: String?, remote: Boolean) {
-                    Log.d("MyApp", "🔌 WebSocket cerrado: $reason")
+                    Log.d("MyApp", "WebSocket cerrado: $reason")
                     isConnected = false
                 }
 
                 override fun onError(ex: Exception?) {
-                    Log.e("MyApp", "❌ WebSocket error: ${ex?.message}")
+                    Log.e("MyApp", "WebSocket error: ${ex?.message}")
                     isConnected = false
                 }
             }
@@ -87,19 +87,5 @@ class MyApp : Application() {
 
     fun setMessageCallback(callback: (String) -> Unit) {
         this.messageCallback = callback
-    }
-
-    fun clearMessageCallback() {
-        Log.d("MyApp", "🔄 Limpiando callback de mensajes")
-        this.messageCallback = null
-    }
-
-    fun hasActiveCallback(): Boolean {
-        return this.messageCallback != null
-    }
-
-    fun disconnectWebSocket() {
-        webSocketClient?.close()
-        isConnected = false
     }
 }

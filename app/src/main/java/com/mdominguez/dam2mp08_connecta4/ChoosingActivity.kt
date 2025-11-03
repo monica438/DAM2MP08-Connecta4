@@ -46,14 +46,14 @@ class ChoosingActivity : AppCompatActivity() {
         // Reset del estado
         resetChoosingState()
 
-        // Procesar lista inicial SI existe
+        // Procesar lista inicial si existe
         if (!initialClientsJson.isNullOrEmpty()) {
             try {
                 val initialClientsArray = JSONArray(initialClientsJson)
                 processClientsListData(initialClientsArray)
-                Log.d("CHOOSING", "✅ Lista inicial procesada: ${connectedUsers.size} usuarios")
+                Log.d("CHOOSING", "Lista inicial procesada: ${connectedUsers.size} usuarios")
             } catch (e: Exception) {
-                Log.e("CHOOSING", "❌ Error procesando lista inicial: ${e.message}")
+                Log.e("CHOOSING", "Error procesando lista inicial: ${e.message}")
             }
         }
 
@@ -76,27 +76,27 @@ class ChoosingActivity : AppCompatActivity() {
             }
         }
 
-        Log.d("CHOOSING", "🔁 Activity creada - Lista de usuarios: ${connectedUsers.size}")
+        Log.d("CHOOSING", "Activity creada - Lista de usuarios: ${connectedUsers.size}")
     }
 
     override fun onResume() {
         super.onResume()
         myApp.setMessageCallback { message -> processMessage(message) }
-        Log.d("CHOOSING", "🎯 onResume - Reiniciando estado")
+        Log.d("CHOOSING", "onResume - Reiniciando estado")
         resetChoosingState()
 
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d("CHOOSING", "🎯 onPause - Limpiando estado")
+        Log.d("CHOOSING", "onPause - Limpiando estado")
         isProcessingInvitation = false
     }
 
     private fun resetChoosingState() {
         isProcessingInvitation = false
         clearStatusMessages()
-        Log.d("CHOOSING", "🔄 Estado reseteado")
+        Log.d("CHOOSING", "Estado reseteado")
     }
 
     private fun clearStatusMessages() {
@@ -113,14 +113,14 @@ class ChoosingActivity : AppCompatActivity() {
     }
 
     private fun processMessage(message: String) {
-        Log.d("CHOOSING", "📥 Mensaje recibido: $message")
+        Log.d("CHOOSING", "Mensaje recibido: $message")
         try {
             val jsonObject = JSONObject(message)
             val type = jsonObject.optString("type", "")
 
             when (type) {
                 "clients" -> {
-                    Log.d("CHOOSING", "🔄 Lista actualizada recibida")
+                    Log.d("CHOOSING", "Lista actualizada recibida")
                     val listArray = jsonObject.optJSONArray("list")
                     if (listArray != null) {
                         processClientsListData(listArray)
@@ -128,23 +128,22 @@ class ChoosingActivity : AppCompatActivity() {
                 }
                 "userJoined" -> {
                     val userName = jsonObject.optString("userName", "")
-                    Log.d("CHOOSING", "👤 Usuario conectado: $userName")
+                    Log.d("CHOOSING", "Usuario conectado: $userName")
                 }
                 "userLeft" -> {
                     val userName = jsonObject.optString("userName", "")
-                    Log.d("CHOOSING", "🚪 Usuario desconectado: $userName")
+                    Log.d("CHOOSING", "Usuario desconectado: $userName")
                 }
                 "invite to play" -> {
                     handleInvitationReceived(jsonObject)
                 }
-                // ⚠️ ELIMINADO completamente el manejo de invite response (la recibiremos en la vista de Pairing)
-                // ⚠️ ELIMINADO completamente el manejo de nameClient
+                // El invite response la recibiremos en la vista de Pairing
                 "entersPlayer1", "entersPlayer2" -> {
-                    Log.d("CHOOSING", "🚪 Mensaje de emparejamiento: $type - IGNORADO")
+                    Log.d("CHOOSING", "Mensaje de emparejamiento: $type - IGNORADO")
                 }
             }
         } catch (e: Exception) {
-            Log.e("CHOOSING", "❌ Error procesando mensaje: ${e.message}")
+            Log.e("CHOOSING", "Error procesando mensaje: ${e.message}")
         }
     }
 
@@ -152,11 +151,11 @@ class ChoosingActivity : AppCompatActivity() {
         val origin = jsonObject.optString("origin", "")
         val messageText = jsonObject.optString("message", "")
 
-        Log.d("CHOOSING", "🎯 INVITACIÓN RECIBIDA de: $origin")
+        Log.d("CHOOSING", "INVITACIÓN RECIBIDA de: $origin")
 
         // Si ya estamos procesando una invitación, ignorar esta
         if (isProcessingInvitation) {
-            Log.d("CHOOSING", "⚠️ IGNORANDO invitación - Ya hay una en proceso")
+            Log.d("CHOOSING", "IGNORANDO invitación - Ya hay una en proceso")
             return
         }
 
@@ -165,10 +164,10 @@ class ChoosingActivity : AppCompatActivity() {
 
         runOnUiThread {
             if (!isFinishing && !isDestroyed) {
-                Log.d("CHOOSING", "🎯 Mostrando alerta de invitación")
+                Log.d("CHOOSING", "Mostrando alerta de invitación")
                 showInvitationAlert(origin, messageText)
             } else {
-                Log.d("CHOOSING", "⚠️ Activity no activa - No se muestra alerta")
+                Log.d("CHOOSING", "Activity no activa - No se muestra alerta")
                 resetChoosingState()
             }
         }
@@ -178,7 +177,7 @@ class ChoosingActivity : AppCompatActivity() {
     private fun processClientsListData(listArray: JSONArray) {
         runOnUiThread {
             try {
-                Log.d("CHOOSING", "📋 Procesando lista de ${listArray.length()} clientes")
+                Log.d("CHOOSING", "Procesando lista de ${listArray.length()} clientes")
                 connectedUsers.clear()
 
                 if (listArray.length() > 0) {
@@ -190,22 +189,22 @@ class ChoosingActivity : AppCompatActivity() {
                     }
                     updateSpinner()
                     updateStatus()
-                    Log.d("CHOOSING", "✅ Lista actualizada: ${connectedUsers.size} jugador(es)")
+                    Log.d("CHOOSING", "Lista actualizada: ${connectedUsers.size} jugador(es)")
                 } else {
                     connectedUsers.clear()
                     updateSpinner()
                     updateStatus()
-                    Log.d("CHOOSING", "📭 Lista vacía - No hay otros jugadores")
+                    Log.d("CHOOSING", "Lista vacía - No hay otros jugadores")
                 }
             } catch (e: Exception) {
-                Log.e("CHOOSING", "❌ Error procesando lista de clientes: ${e.message}")
+                Log.e("CHOOSING", "Error procesando lista de clientes: ${e.message}")
                 txtStatus.text = "Error al cargar lista"
             }
         }
     }
 
     private fun goToPairing(opponent: String, isInviter: Boolean) {
-        Log.d("CHOOSING", "🎯 REDIRIGIENDO a PairingActivity - Rol: ${if (isInviter) "INVITADOR" else "INVITADO"}, Opponent: $opponent")
+        Log.d("CHOOSING", "REDIRIGIENDO a PairingActivity - Rol: ${if (isInviter) "INVITADOR" else "INVITADO"}, Opponent: $opponent")
 
         // Limpiar estado antes de ir a Pairing
         isProcessingInvitation = false
@@ -228,7 +227,7 @@ class ChoosingActivity : AppCompatActivity() {
             if (connectedUsers.isNotEmpty()) {
                 spinnerJugadores.setSelection(0)
             }
-            Log.d("CHOOSING", "🔄 Spinner actualizado con ${connectedUsers.size} usuarios")
+            Log.d("CHOOSING", "Spinner actualizado con ${connectedUsers.size} usuarios")
         }
     }
 
@@ -245,7 +244,7 @@ class ChoosingActivity : AppCompatActivity() {
     }
 
     private fun sendInvitation(opponent: String) {
-        Log.d("CHOOSING", "✉️ ENVIANDO invitación a: $opponent")
+        Log.d("CHOOSING", "ENVIANDO invitación a: $opponent")
 
         runOnUiThread {
             txtStatus.text = "Enviando invitación a $opponent..."
@@ -258,21 +257,21 @@ class ChoosingActivity : AppCompatActivity() {
         }
         myApp.sendWebSocketMessage(invitation.toString())
 
-        // ✅ Como INVITADOR, vamos DIRECTAMENTE a Pairing después de enviar invitación
+        // Como INVITADOR, vamos DIRECTAMENTE a Pairing después de enviar invitación
         runOnUiThread {
             if (!isFinishing && !isDestroyed) {
-                Log.d("CHOOSING", "🎯 Como INVITADOR, yendo a Pairing inmediatamente")
+                Log.d("CHOOSING", "Como INVITADOR, yendo a Pairing inmediatamente")
                 goToPairing(opponent, isInviter = true)
             }
         }
     }
 
     private fun showInvitationAlert(origin: String, message: String) {
-        Log.d("CHOOSING", "🎯 MOSTRANDO ALERTA de invitación de: $origin")
+        Log.d("CHOOSING", "MOSTRANDO ALERTA de invitación de: $origin")
 
         runOnUiThread {
             if (isFinishing || isDestroyed) {
-                Log.d("CHOOSING", "⚠️ Activity no activa - No se muestra alerta")
+                Log.d("CHOOSING", "Activity no activa - No se muestra alerta")
                 resetChoosingState()
                 return@runOnUiThread
             }
@@ -282,7 +281,7 @@ class ChoosingActivity : AppCompatActivity() {
                     .setTitle("Invitación de $origin")
                     .setMessage(message)
                     .setPositiveButton("Aceptar") { dialog, which ->
-                        Log.d("CHOOSING", "✅ USUARIO ACEPTÓ invitación de: $origin")
+                        Log.d("CHOOSING", "USUARIO ACEPTÓ invitación de: $origin")
 
                         // Enviar respuesta de aceptación
                         val response = JSONObject().apply {
@@ -294,13 +293,13 @@ class ChoosingActivity : AppCompatActivity() {
 
                         runOnUiThread {
                             txtStatus.text = "Aceptaste la invitación de $origin"
-                            Log.d("CHOOSING", "🎯 Como INVITADO, yendo a Pairing después de aceptar")
-                            // ✅ Como INVITADO, vamos a Pairing inmediatamente después de aceptar
+                            Log.d("CHOOSING", "Como INVITADO, yendo a Pairing después de aceptar")
+                            // Como INVITADO, vamos a Pairing inmediatamente después de aceptar
                             goToPairing(origin, isInviter = false)
                         }
                     }
                     .setNegativeButton("Rechazar") { dialog, which ->
-                        Log.d("CHOOSING", "❌ USUARIO RECHAZÓ invitación de: $origin")
+                        Log.d("CHOOSING", "USUARIO RECHAZÓ invitación de: $origin")
 
                         val response = JSONObject().apply {
                             put("type", "invite response")
@@ -315,7 +314,7 @@ class ChoosingActivity : AppCompatActivity() {
                         }
                     }
                     .setOnCancelListener {
-                        Log.d("CHOOSING", "❌ DIÁLOGO CANCELADO - Considerado como rechazo")
+                        Log.d("CHOOSING", "DIÁLOGO CANCELADO - Considerado como rechazo")
 
                         val response = JSONObject().apply {
                             put("type", "invite response")
@@ -335,7 +334,7 @@ class ChoosingActivity : AppCompatActivity() {
                 alertDialog.show()
 
             } catch (e: Exception) {
-                Log.e("CHOOSING", "❌ Error mostrando alerta: ${e.message}")
+                Log.e("CHOOSING", "Error mostrando alerta: ${e.message}")
                 resetChoosingState()
             }
         }

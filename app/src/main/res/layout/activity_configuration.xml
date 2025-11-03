@@ -139,7 +139,7 @@
         android:layout_height="45dp"
         android:ems="10"
         android:inputType="text"
-        android:text="localhost"
+        android:text="10.0.2.2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent"

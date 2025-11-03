@@ -109,11 +109,11 @@ class ConfigurationActivity : AppCompatActivity() {
 
             when (type) {
                 "clients" -> {
-                    // ¡Guardar la lista inicial!
+                    // Guardamos la lista inicial de clientes (no le da tiempo a recibirlo desde la actividad de Choosing)
                     val listArray = jsonObject.optJSONArray("list")
                     if (listArray != null) {
                         initialClientsList = listArray
-                        Log.d("CONFIG", "✅ Lista inicial guardada: ${initialClientsList.length()} clientes")
+                        Log.d("CONFIG", "Lista inicial guardada: ${initialClientsList.length()} clientes")
                     }
 
                     // Conexión exitosa

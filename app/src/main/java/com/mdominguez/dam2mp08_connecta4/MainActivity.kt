@@ -287,7 +287,6 @@ class MainActivity : AppCompatActivity() {
             Log.d("GAME", "Juego no ha comenzado todavía")
             findViewById<TextView>(R.id.turnoMain).text = "El juego no ha comenzado"
 
-            // Mostrar Toast temporal
             android.widget.Toast.makeText(
                 this,
                 "El juego no ha comenzado todavía",
@@ -299,7 +298,6 @@ class MainActivity : AppCompatActivity() {
         if (!isMyTurn) {
             Log.d("GAME", "No es tu turno - Turno de: $opponentName")
 
-            // MOSTRAR TOAST TEMPORAL en lugar de cambiar el texto permanente
             android.widget.Toast.makeText(
                 this,
                 "Espera tu turno! - Turno de $opponentName",
@@ -322,12 +320,10 @@ class MainActivity : AppCompatActivity() {
         myApp.sendWebSocketMessage(playData.toString())
         Log.d("GAME", "Jugada enviada: columna $columna")
 
-        // Deshabilitar temporalmente
         findViewById<TextView>(R.id.turnoMain).text = "Jugada enviada..."
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // No cerrar la conexión WebSocket - se mantiene en MyApp
     }
 }

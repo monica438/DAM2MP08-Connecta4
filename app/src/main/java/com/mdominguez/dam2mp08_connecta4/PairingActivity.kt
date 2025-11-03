@@ -62,7 +62,7 @@ class PairingActivity : AppCompatActivity() {
             updateStatus("Esperando respuesta de $intendedOpponent...")
             opponentName = intendedOpponent
         } else {
-            // SOMOS EL INVITADO: mostramos ambos nombres conocidos
+            // SOMOS EL INVITADO: mostramos ambos nombres
             findViewById<TextView>(R.id.player1Pairing).text = intendedOpponent
             findViewById<TextView>(R.id.player2Pairing).text = player1Name
             opponentName = intendedOpponent
@@ -88,7 +88,7 @@ class PairingActivity : AppCompatActivity() {
                     if (isInviter) {
                         val origin = jsonObject.optString("origin", "")
                         val accepted = jsonObject.optBoolean("accepted", false)
-                        Log.d("PAIRING", "📨 Respuesta de invitación recibida: $origin - $accepted")
+                        Log.d("PAIRING", "Respuesta de invitación recibida: $origin - $accepted")
 
                         runOnUiThread {
                             if (accepted) {
@@ -203,7 +203,7 @@ class PairingActivity : AppCompatActivity() {
         }
 
         if (canProceed) {
-            Log.d("PAIRING", "🎯 Redirigiendo a CountdownActivity")
+            Log.d("PAIRING", "Redirigiendo a CountdownActivity")
             val intent = Intent(this, CountdownActivity::class.java).apply {
                 putExtra("playerName", player1Name)
                 putExtra("opponentName", opponentName)
