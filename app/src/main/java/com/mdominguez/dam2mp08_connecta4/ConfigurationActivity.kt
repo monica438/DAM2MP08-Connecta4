@@ -50,7 +50,7 @@ class ConfigurationActivity : AppCompatActivity() {
         val localBtn = findViewById<Button>(R.id.localBtn)
         localBtn.setOnClickListener {
             editProtocol.setText("ws")
-            editServerIP.setText("172.30.70.227") //10.0.2.2
+            editServerIP.setText("10.0.2.2") //172.30.70.227 si lo hago desde wsl (hostname -I)
             editPort.setText("3000")
         }
 
